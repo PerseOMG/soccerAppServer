@@ -20,16 +20,16 @@ const createSendToken = (user, statusCode, res) => {
             Date.now() + process.env.JWT_COOKIE_EXPIRES_IN * 24 * 60 * 60 * 1000
         ),
         httpOnly: true,
-        domain: "localhost:8000",
+        domain: "localhost:4200",
         sameSite: "none",
-        secure: true,
     };
 
     if (process.env.NODE_ENV === "production") cookieOptions.secure = true;
 
     user.password = undefined;
 
-    res.cookie("AppSoccerJWT", token, cookieOptions);
+    res.cookie("AppSoccerJwt", token, cookieOptions);
+
     res.status(statusCode).json({
         status: "success",
         data: {
