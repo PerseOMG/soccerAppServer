@@ -76,7 +76,14 @@ const teamSchema = new mongoose.Schema({
         type: String,
         default: "NA",
     },
-    userId: { type: mongoose.Schema.Types.ObjectId, ref: "User" },
+    userId: {
+        type: String,
+        required: true,
+    },
+    tournamentsId: {
+        type: Array,
+        required: true,
+    },
 }, {
     toJSON: { virtuals: true },
     toObject: { virtuals: true },

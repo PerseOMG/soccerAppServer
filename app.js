@@ -9,6 +9,7 @@ const cors = require("cors");
 const app = express();
 const teamsRouter = require("./routes/teamsRoutes");
 const userRouter = require("./routes/userRoutes");
+const tournamentsRouter = require("./routes/tournamentsRoutes");
 
 app.use(helmet());
 
@@ -45,6 +46,7 @@ app.use(
 
 app.use(`${baseUrl}/teams`, teamsRouter);
 app.use(`${baseUrl}/users`, userRouter);
+app.use(`${baseUrl}/tournaments`, tournamentsRouter);
 
 app.all("*", (req, res, next) => {
     console.log("TO DO: ROUTE");
