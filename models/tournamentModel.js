@@ -1,10 +1,14 @@
 const mongoose = require("mongoose");
+const jwt = require("jsonwebtoken");
 
 const tournamentSchema = new mongoose.Schema({
     name: {
         type: String,
         required: true,
-        unique: [true, "Please enter a valid name"],
+        unique: [
+            true,
+            "Please enter another name for the tournament. Name already taken.",
+        ],
         trim: true,
     },
     photo: {
@@ -13,11 +17,13 @@ const tournamentSchema = new mongoose.Schema({
     currentEdition: {
         type: Number,
     },
-    players: {
-        type: Array,
-    },
+    teams: [{
+        type: mongoose.Schema.ObjectId,
+        ref: "Team",
+    }, ],
     userId: {
-        type: String,
+        type: mongoose.Schema.ObjectId,
+        ref: "User",
     },
     editionStatistics: {
         type: {
@@ -83,6 +89,15 @@ const tournamentSchema = new mongoose.Schema({
             },
         },
     },
+});
+
+tournamentSchema.pre(/^find/, function(next) {
+    this.lean().populate({
+        path: "teams",
+        select: "id name logo",
+    });
+
+    next();
 });
 
 const Tournament = mongoose.model("Tournament", tournamentSchema);
