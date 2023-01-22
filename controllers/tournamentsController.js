@@ -1,11 +1,14 @@
-const Tournament = require("../models/tournamentModel");
+const {
+    Tournament,
+    TeamPositionTableData,
+} = require("../models/tournamentModel");
 const catchAsync = require("../utils/catchAsync.util");
 const AppError = require("../utils/appError.util");
 const APIFeatures = require("../utils/apiFeatures.util");
 
 exports.getAllTournaments = catchAsync(async(req, res, next) => {
     const features = new APIFeatures(
-            Tournament.find({ userId: { $in: req.user._id } }),
+            Tournament.find({ userId: { $in: req.user._id } }, "-userId"),
             req.query
         )
         .filter()
@@ -22,14 +25,41 @@ exports.getAllTournaments = catchAsync(async(req, res, next) => {
 });
 
 exports.createTournament = catchAsync(async(req, res, next) => {
-    const newTournament = await Tournament.create({
-        ...req.body,
-        userId: req.user._id,
+    const { teams } = req.body;
+    if (teams.length % 2 !== 0) {
+        return new AppError("Teams should be a multiply of 2", 400);
+    }
+    const positionTable = [];
+
+    teams.forEach((team) => {
+        positionTable.push(
+            new TeamPositionTableData({
+                team,
+            })
+        );
     });
 
-    res
-        .status(201)
-        .json({ status: "success", data: { tournament: newTournament } });
+    const tournament = new Tournament({
+        name: req.body.name,
+        teams,
+        photo: req.body.photo,
+        userId: req.user._id,
+        positionTable,
+        editionStatistics: { currentEdition: 0 },
+        historicalStatistics: { currentEdition: 0 },
+    });
+    // const newTournament = await Tournament.create({
+    //     ...req.body,
+    //     userId: req.user._id,
+    //     positionTable.table:
+    // });
+
+    tournament.save((err, newTournament) => {
+        if (err) return res.status(400).json({ status: "failed", error: err });
+        res
+            .status(201)
+            .json({ status: "success", data: { tournament: newTournament } });
+    });
 });
 
 exports.getTournament = catchAsync(async(req, res, next) => {

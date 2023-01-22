@@ -13,9 +13,10 @@ const teamSchema = new mongoose.Schema({
         type: String,
         required: true,
     },
-    tournaments: {
-        type: Array,
-    },
+    tournaments: [{
+        type: mongoose.Schema.ObjectId,
+        ref: "Tournament",
+    }, ],
     totalGoalsScored: {
         type: Number,
         default: 0,
@@ -24,10 +25,20 @@ const teamSchema = new mongoose.Schema({
         type: Number,
         default: 0,
     },
-    totalChampionships: {
-        type: Array,
-        default: [],
-    },
+    totalChampionships: [{
+        type: {
+            tournament: {
+                type: mongoose.Schema.ObjectId,
+                ref: "Tournament",
+                default: null,
+            },
+            value: {
+                type: Number,
+                default: null,
+            },
+        },
+        default: null,
+    }, ],
     totalGamesPlayed: {
         type: Number,
         default: 0,
@@ -77,11 +88,7 @@ const teamSchema = new mongoose.Schema({
         default: "NA",
     },
     userId: {
-        type: String,
-        required: true,
-    },
-    tournamentsId: {
-        type: Array,
+        type: mongoose.Schema.ObjectId,
         required: true,
     },
 }, {
@@ -95,10 +102,6 @@ teamSchema.virtual("goalsDiff").get(function() {
 
 teamSchema.virtual("totalTiedGames").get(function() {
     return this.totalGamesPlayed - this.totalGamesWon - this.totalGamesLoosed;
-});
-
-teamSchema.virtual("totalChampionshipsPlayed").get(function() {
-    return this.totalChampionships ? this.totalChampionships.length : null;
 });
 
 teamSchema.virtual("totalTournaments").get(function() {
@@ -135,8 +138,11 @@ teamSchema.virtual("wonLoosedRatio").get(function() {
         0;
 });
 
-teamSchema.pre("save", function(next) {
-    this.tournaments.push("All Stars");
+teamSchema.pre(/^find/, function(next) {
+    this.lean().populate({
+        path: "tournaments",
+        select: "_id name photo -teams -positionTable.team ",
+    });
     next();
 });
 

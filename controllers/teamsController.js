@@ -11,6 +11,7 @@ exports.getAllTeams = catchAsync(async(req, res, next) => {
         .paginate();
 
     const teams = await features.query;
+
     res.status(200).json({
         status: "success",
         results: teams.length,
