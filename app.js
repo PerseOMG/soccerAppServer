@@ -7,9 +7,12 @@ const xss = require("xss-clean");
 const hpp = require("hpp");
 const cors = require("cors");
 const app = express();
+
+// Routers
 const teamsRouter = require("./routes/teamsRoutes");
 const userRouter = require("./routes/userRoutes");
 const tournamentsRouter = require("./routes/tournamentsRoutes");
+const teamStatisticsRouter = require("./routes/teamStatisticsRoutes");
 
 app.use(helmet());
 
@@ -47,8 +50,10 @@ app.use(
 app.use(`${baseUrl}/teams`, teamsRouter);
 app.use(`${baseUrl}/users`, userRouter);
 app.use(`${baseUrl}/tournaments`, tournamentsRouter);
+app.use(`${baseUrl}/statistics`, teamStatisticsRouter);
 
 app.all("*", (req, res, next) => {
+    console.log(req.url);
     console.log("TO DO: ROUTE");
     next("ERROR");
 });

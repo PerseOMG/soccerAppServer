@@ -12,6 +12,7 @@ const teamSchema = new mongoose.Schema({
     logo: {
         type: String,
         required: true,
+        unique: true,
     },
     tournaments: [{
         type: mongoose.Schema.ObjectId,
@@ -34,6 +35,10 @@ const teamSchema = new mongoose.Schema({
             },
             value: {
                 type: Number,
+                default: null,
+            },
+            edition: {
+                type: String,
                 default: null,
             },
         },
