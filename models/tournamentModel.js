@@ -109,6 +109,34 @@ const tournamentSchema = new mongoose.Schema({
     editionStatistics: statisticsSchema,
     historicalStatistics: statisticsSchema,
     positionTable: [teamPositionTableData],
+    calendar: {
+        type: [{
+            edition: { type: Number, required: true },
+            matches: [{
+                local: {
+                    type: mongoose.Schema.ObjectId,
+                    ref: "Team",
+                    required: true,
+                },
+                visit: {
+                    type: mongoose.Schema.ObjectId,
+                    ref: "Team",
+                    required: true,
+                },
+                hasBeenPlayed: {
+                    type: Boolean,
+                    default: false,
+                },
+                score: {
+                    type: String,
+                    required: true,
+                    default: "0 - 0",
+                },
+            }, ],
+        }, ],
+        default: null,
+        required: true,
+    },
 });
 
 tournamentSchema.pre(/^find/, function(next) {
