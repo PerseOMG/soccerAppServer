@@ -1,4 +1,5 @@
 const mongoose = require("mongoose");
+const Team = require("../models/teamModel");
 
 const teamStatisticsSchema = new mongoose.Schema({
     team: {
@@ -134,8 +135,6 @@ const tournamentSchema = new mongoose.Schema({
                 },
             }, ],
         }, ],
-        default: null,
-        required: true,
     },
 });
 
@@ -252,10 +251,78 @@ tournamentSchema.pre(/^find/, function(next) {
         .populate({
             path: "positionTable.team",
             select: "id name logo -tournaments",
+        })
+        .populate({
+            path: "calendar.matches.local",
+            select: "id name logo -tournaments",
+        })
+        .populate({
+            path: "calendar.matches.visit",
+            select: "id name logo -tournaments",
         });
 
     next();
 });
+
+tournamentSchema.pre("save", function(next) {
+    // Creates position table
+    this.teams.forEach((team) => {
+        this.positionTable.push(
+            new TeamPositionTableData({
+                team: team.toString(),
+            })
+        );
+    });
+
+    // Creates calendar for teams
+    this.teams.forEach((team, idx) => {
+        const matches = [];
+        for (let i = idx; i < this.teams.length - 1; i++) {
+            matches.push({
+                local: team.toString(),
+                visit: this.teams[i + 1].toString(),
+                hasBeenPlayed: false,
+                score: "0 - 0",
+            });
+        }
+        if (idx + 1 !== this.teams.length)
+            this.calendar.push({
+                edition: idx + 1,
+                matches,
+            });
+    });
+    // Assign new tournament to teams
+    this.teams.forEach(async(teamId) => {
+        await Team.findById(teamId.toString())
+            .exec()
+            .then(async(team) => {
+                Team.findByIdAndUpdate(team._id, {
+                        ...team,
+                        tournaments: [...team.tournaments, this._id],
+                    })
+                    .exec()
+                    .then(() => next());
+            });
+    });
+});
+
+tournamentSchema.pre("deleteOne", { document: true }, async function(next) {
+    this.teams.forEach(async(teamId) => {
+        await Team.findById(teamId.toString())
+            .exec()
+            .then(async(team) => {
+                Team.findByIdAndUpdate(team._id, {
+                        ...team,
+                        tournaments: team.tournaments.filter(
+                            (teamId) => teamId.toString() !== this._id.toString()
+                        ),
+                    })
+                    .exec()
+                    .then(() => next());
+            });
+    });
+});
+
 const TeamPositionTableData = mongoose.model(
     "TeamPositionTableData",
     teamPositionTableData

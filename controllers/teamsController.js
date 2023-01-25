@@ -43,7 +43,6 @@ exports.getTeam = catchAsync(async(req, res, next) => {
 exports.updateTeam = catchAsync(async(req, res, next) => {
     const id = req.params.id;
     const body = req.body;
-
     const team = await Team.findByIdAndUpdate(id, body, {
         new: true,
         runValidators: true,
@@ -62,7 +61,7 @@ exports.updateTeam = catchAsync(async(req, res, next) => {
 exports.deleteTeam = catchAsync(async(req, res, next) => {
     const id = req.params.id;
 
-    const team = await Team.findByIdAndDelete(id, { runValidators: true });
+    const team = await Team.deleteOne({ _id: id });
 
     if (!team) {
         return new AppError("No tour found with that ID", 404);
