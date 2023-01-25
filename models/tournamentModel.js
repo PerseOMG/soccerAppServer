@@ -92,7 +92,7 @@ const tournamentSchema = new mongoose.Schema({
         ],
         trim: true,
     },
-    photo: {
+    logo: {
         type: String,
     },
     teams: [{

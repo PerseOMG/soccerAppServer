@@ -33,7 +33,7 @@ exports.createTournament = catchAsync(async(req, res, next) => {
     const tournament = new Tournament({
         name: req.body.name,
         teams,
-        photo: req.body.photo,
+        logo: req.body.logo,
         userId: req.user._id,
         editionStatistics: { currentEdition: 0 },
         historicalStatistics: { currentEdition: 0 },

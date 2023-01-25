@@ -13,6 +13,7 @@ const teamSchema = new mongoose.Schema({
         required: true,
         unique: true,
     },
+    isFavorite: { type: Boolean, default: false },
     tournaments: [{
         type: mongoose.Schema.ObjectId,
         ref: "Tournament",
@@ -145,7 +146,7 @@ teamSchema.virtual("wonLoosedRatio").get(function() {
 teamSchema.pre(/^find/, function(next) {
     this.lean().populate({
         path: "tournaments",
-        select: "_id name photo -teams -positionTable.team  -historicalStatistics.maxGoalsScorer.team -historicalStatistics.lessGoalsScorer.team -historicalStatistics.moreGoalsAgainst.team -historicalStatistics.lessGoalsAgainst.team -historicalStatistics.moreGamesLoosed.team -historicalStatistics.moreGamesWon.team -historicalStatistics.moreChampionshipsWon.team -historicalStatistics.moreGamesTied.team -historicalStatistics.moreMatchesPlayed.team -historicalStatistics.bestWin.winner -historicalStatistics.bestWin.looser -historicalStatistics.worstLoose.winner -historicalStatistics.worstLoose.looser -editionStatistics.maxGoalsScorer.team -editionStatistics.lessGoalsScorer.team -editionStatistics.moreGoalsAgainst.team -editionStatistics.lessGoalsAgainst.team -editionStatistics.moreGamesLoosed.team -editionStatistics.moreGamesWon.team -editionStatistics.moreChampionshipsWon.team -editionStatistics.moreGamesTied.team -editionStatistics.moreMatchesPlayed.team -editionStatistics.bestWin.winner -editionStatistics.bestWin.looser -editionStatistics.worstLoose.winner -editionStatistics.worstLoose.looser -calendar.matches.local -calendar.matches.visit",
+        select: "_id name logo -teams -positionTable.team  -historicalStatistics.maxGoalsScorer.team -historicalStatistics.lessGoalsScorer.team -historicalStatistics.moreGoalsAgainst.team -historicalStatistics.lessGoalsAgainst.team -historicalStatistics.moreGamesLoosed.team -historicalStatistics.moreGamesWon.team -historicalStatistics.moreChampionshipsWon.team -historicalStatistics.moreGamesTied.team -historicalStatistics.moreMatchesPlayed.team -historicalStatistics.bestWin.winner -historicalStatistics.bestWin.looser -historicalStatistics.worstLoose.winner -historicalStatistics.worstLoose.looser -editionStatistics.maxGoalsScorer.team -editionStatistics.lessGoalsScorer.team -editionStatistics.moreGoalsAgainst.team -editionStatistics.lessGoalsAgainst.team -editionStatistics.moreGamesLoosed.team -editionStatistics.moreGamesWon.team -editionStatistics.moreChampionshipsWon.team -editionStatistics.moreGamesTied.team -editionStatistics.moreMatchesPlayed.team -editionStatistics.bestWin.winner -editionStatistics.bestWin.looser -editionStatistics.worstLoose.winner -editionStatistics.worstLoose.looser -calendar.matches.local -calendar.matches.visit",
     });
     next();
 });
@@ -230,7 +231,7 @@ teamSchema.pre("deleteOne", async function(next) {
                 });
                 Tournament.findByIdAndUpdate(tournament._id, {
                         name: tournament.name,
-                        photo: tournament.photo,
+                        logo: tournament.logo,
                         userId: tournament.userId,
                         editionStatistics: tournament.editionStatistics,
                         historicalStatistics: tournament.historicalStatistics,
