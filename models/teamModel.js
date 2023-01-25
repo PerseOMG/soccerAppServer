@@ -228,10 +228,6 @@ teamSchema.pre("deleteOne", async function(next) {
                         }
                     }
                 });
-                tournament.teams.forEach((teamFromTournament) => {
-                    console.log(teamFromTournament._id);
-                    console.log(team._id);
-                });
                 Tournament.findByIdAndUpdate(tournament._id, {
                         name: tournament.name,
                         photo: tournament.photo,
