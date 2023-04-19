@@ -11,10 +11,7 @@ exports.getStatistics = catchAsync(async (req, res, next) => {
   const type = req.params.type;
 
   if (type !== "edition" && type !== "historical") {
-    return res.status(400).json({
-      status: "fail",
-      message: "Please select a proper type",
-    });
+    return AppError(res, "Please select a proper type", 400);
   }
 
   const tournamentStatistics = findStatistics(
@@ -25,10 +22,7 @@ exports.getStatistics = catchAsync(async (req, res, next) => {
   );
 
   if (!tournamentStatistics || tournamentStatistics.length === 0) {
-    return res.status(404).json({
-      status: "fail",
-      message: "No statistics found with that ID",
-    });
+    return AppError(res, "No statistics found with that ID", 404);
   }
 
   res.status(200).json({
