@@ -12,15 +12,16 @@ const app = express();
 const teamsRouter = require("./routes/teamsRoutes");
 const userRouter = require("./routes/userRoutes");
 const tournamentsRouter = require("./routes/tournamentsRoutes");
-const teamStatisticsRouter = require("./routes/teamStatisticsRoutes");
+const teamStatisticsRouter = require("./routes/statistics/teamStatisticsRoutes");
+const tournamentStatisticsRouter = require("./routes/statistics/tournamentStatisticsRoutes");
 
 app.use(helmet());
 
 // Limit requests calls from API
 const limiter = rateLimit({
-    max: 1000, // 100 calls
-    windowMs: 60 * 60 * 1000, //1hr
-    message: "Too many request from this IP, please try again in an hour!",
+  max: 1000, // 100 calls
+  windowMs: 60 * 60 * 1000, //1hr
+  message: "Too many request from this IP, please try again in an hour!",
 });
 app.use("/api", limiter);
 
@@ -35,27 +36,28 @@ app.use(xss());
 
 //Prevent parameter polution
 app.use(
-    hpp({
-        whitelist: [
-            "duration",
-            "ratingsQuantity",
-            "ratingsAverage",
-            "maxGroupSize",
-            "difficulty",
-            "price",
-        ],
-    })
+  hpp({
+    whitelist: [
+      "duration",
+      "ratingsQuantity",
+      "ratingsAverage",
+      "maxGroupSize",
+      "difficulty",
+      "price",
+    ],
+  })
 );
 
 app.use(`${baseUrl}/teams`, teamsRouter);
 app.use(`${baseUrl}/users`, userRouter);
 app.use(`${baseUrl}/tournaments`, tournamentsRouter);
-app.use(`${baseUrl}/statistics`, teamStatisticsRouter);
+app.use(`${baseUrl}/team/statistics`, teamStatisticsRouter);
+app.use(`${baseUrl}/tournament/statistics`, tournamentStatisticsRouter);
 
 app.all("*", (req, res, next) => {
-    console.log(req.url);
-    console.log("TO DO: ROUTE");
-    next("ERROR");
+  console.log(req.url);
+  console.log("TO DO: ROUTE :C");
+  next("ERROR");
 });
 
 module.exports = app;
