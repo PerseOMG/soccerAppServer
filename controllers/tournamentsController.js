@@ -4,6 +4,7 @@ const { Tournament } = require("../models/tournamentModel");
 // Utilities
 const catchAsync = require("../utils/catchAsync.util");
 const AppError = require("../utils/appError.util");
+const updateById = require("./factories/updateById");
 
 exports.getAllTournaments = catchAsync(async (req, res, next) => {
   const tournaments = await Tournament.find(
@@ -67,10 +68,7 @@ exports.getTournament = catchAsync(async (req, res, next) => {
 exports.updateTournament = catchAsync(async (req, res, next) => {
   const id = req.params.id;
   const body = req.body;
-  const tournament = await Tournament.findByIdAndUpdate(id, body, {
-    new: true,
-    runValidators: true,
-  });
+  const tournament = updateById(Tournament, id, body);
 
   if (!tournament) {
     return AppError(res, "No tour found with that ID", 404);

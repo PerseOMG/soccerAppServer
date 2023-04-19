@@ -4,6 +4,7 @@ const Team = require("../models/teamModel");
 // Utilities
 const catchAsync = require("../utils/catchAsync.util");
 const AppError = require("../utils/appError.util");
+const updateById = require("./factories/updateById");
 
 exports.getAllTeams = catchAsync(async (req, res, next) => {
   const teams = await Team.find();
@@ -40,10 +41,7 @@ exports.getTeam = catchAsync(async (req, res, next) => {
 exports.updateTeam = catchAsync(async (req, res, next) => {
   const id = req.params.id;
   const body = req.body;
-  const team = await Team.findByIdAndUpdate(id, body, {
-    new: true,
-    runValidators: true,
-  });
+  const team = updateById(Team, id, body);
 
   if (!team) {
     return AppError(res, "No tour found with that ID", 404);

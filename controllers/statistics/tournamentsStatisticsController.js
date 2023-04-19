@@ -4,6 +4,7 @@ const {
   TournamentEditionStatistics,
   TournamentHistoricalStatistics,
 } = require("../../models/statistics/tournamentStatistics");
+const updateById = require("../factories/updateById");
 
 exports.getStatistics = catchAsync(async (req, res, next) => {
   const id = req.params.id;
@@ -16,12 +17,13 @@ exports.getStatistics = catchAsync(async (req, res, next) => {
     });
   }
 
-  const tournamentStatistics =
+  const tournamentStatistics = findStatistics(
     type === "edition"
-      ? await TournamentEditionStatistics.find({ tournamentId: id })
-      : await TournamentHistoricalStatistics.find({ tournamentId: id });
+      ? TournamentEditionStatistics
+      : TournamentHistoricalStatistics,
+    id
+  );
 
-  console.log(tournamentStatistics);
   if (!tournamentStatistics || tournamentStatistics.length === 0) {
     return res.status(404).json({
       status: "fail",
@@ -44,16 +46,13 @@ exports.updateStatistics = catchAsync(async (req, res, next) => {
     return AppError(res, "Please select a proper type", 404);
   }
 
-  const tournamentStatistics =
+  const tournamentStatistics = updateById(
     type === "edition"
-      ? await TournamentEditionStatistics.findByIdAndUpdate(id, body, {
-          new: true,
-          runValidators: true,
-        })
-      : await TournamentHistoricalStatistics.findByIdAndUpdate(id, body, {
-          new: true,
-          runValidators: true,
-        });
+      ? TournamentEditionStatistics
+      : TournamentHistoricalStatistics,
+    id,
+    body
+  );
 
   if (!teamStatistics) {
     return AppError(res, "No tour found with that ID", 404);
@@ -64,3 +63,7 @@ exports.updateStatistics = catchAsync(async (req, res, next) => {
     data: { tournamentStatistics },
   });
 });
+
+const findStatistics = async (Model, id) => {
+  return await Model.find({ tournamentId: id });
+};

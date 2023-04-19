@@ -1,6 +1,7 @@
 const User = require("../models/userModel");
 const catchAsync = require("../utils/catchAsync.util");
 const AppError = require("../utils/appError.util");
+const updateById = require("./factories/updateById");
 
 const filterObj = (obj, ...allowedFields) => {
   const newObj = {};
@@ -37,10 +38,7 @@ exports.updateMe = catchAsync(async (req, res, next) => {
   // We grab only the authorized fields for the user to update
   const filteredBody = filterObj(req.body, "name", "email");
   // We use this method because if not (instead use .save()) will give us an error because confirmPassword is required
-  const updatedUser = await User.findByIdAndUpdate(req.user.id, filteredBody, {
-    new: true,
-    runValidators: true,
-  });
+  const updatedUser = updateById(User, req.user.id, filteredBody);
 
   res.status(200).json({
     status: "success",
