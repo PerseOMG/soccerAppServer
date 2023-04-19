@@ -41,7 +41,7 @@ exports.updateStatistics = catchAsync(async (req, res, next) => {
   const body = req.body;
 
   if (type !== "edition" && type !== "historical") {
-    return new AppError("Please select a proper type", 404);
+    return AppError(res, "Please select a proper type", 404);
   }
 
   const tournamentStatistics =
@@ -56,7 +56,7 @@ exports.updateStatistics = catchAsync(async (req, res, next) => {
         });
 
   if (!teamStatistics) {
-    return new AppError("No tour found with that ID", 404);
+    return AppError(res, "No tour found with that ID", 404);
   }
 
   res.status(200).json({

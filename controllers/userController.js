@@ -25,7 +25,8 @@ exports.updateMe = catchAsync(async (req, res, next) => {
   // Create error if user post password data
   if (req.body.password || req.body.passwordConfirm) {
     return next(
-      new AppError(
+      AppError(
+        res,
         "This route is not for password updates. Please use the right one. ",
         400
       )

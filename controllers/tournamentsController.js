@@ -31,12 +31,11 @@ exports.createTournament = catchAsync(async (req, res, next) => {
 
   tournament.save((err, newTournament) => {
     if (err) {
-      return res.status(400).json({
-        status: "failed",
-        error: err,
-        message:
-          "Something went wrong. Please choose another name for your tournament",
-      });
+      return AppError(
+        res,
+        "Something went wrong. Please choose another name for your tournament",
+        400
+      );
     }
     res.status(201).json({
       status: "success",
@@ -55,10 +54,7 @@ exports.getTournament = catchAsync(async (req, res, next) => {
   });
 
   if (!tournament || tournament.length === 0) {
-    return res.status(404).json({
-      status: "fail",
-      message: "No tour found with that ID",
-    });
+    return AppError(res, "No tournament found with that ID", 404);
   }
 
   res.status(200).json({
@@ -77,7 +73,7 @@ exports.updateTournament = catchAsync(async (req, res, next) => {
   });
 
   if (!tournament) {
-    return new AppError("No tour found with that ID", 404);
+    return AppError(res, "No tour found with that ID", 404);
   }
 
   res.status(200).json({
@@ -97,7 +93,7 @@ exports.deleteTournament = catchAsync(async (req, res, next) => {
   );
 
   if (!tournament) {
-    return new AppError("No tour found with that ID", 404);
+    return AppError(res, "No tour found with that ID", 404);
   }
 
   res.status(204).json({

@@ -27,7 +27,7 @@ exports.getTeam = catchAsync(async (req, res, next) => {
   const team = await Team.find({ _id: id, userId: req.user._id });
 
   if (!team) {
-    return new AppError("No tour found with that ID", 404);
+    return AppError(res, "No tour found with that ID", 404);
   }
 
   res.status(200).json({
@@ -46,7 +46,7 @@ exports.updateTeam = catchAsync(async (req, res, next) => {
   });
 
   if (!team) {
-    return new AppError("No tour found with that ID", 404);
+    return AppError(res, "No tour found with that ID", 404);
   }
 
   res.status(200).json({
@@ -62,7 +62,7 @@ exports.deleteTeam = catchAsync(async (req, res, next) => {
   const team = await Team.deleteOne({ _id: id, userId: req.user._id });
 
   if (!team) {
-    return new AppError("No tour found with that ID", 404);
+    return AppError(res, "No tour found with that ID", 404);
   }
 
   res.status(204).json({

@@ -51,7 +51,7 @@ exports.updateTeamStatistics = catchAsync(async (req, res, next) => {
   });
 
   if (!teamStatistics) {
-    return new AppError("No team found with that ID", 404);
+    return AppError(res, "No team found with that ID", 404);
   }
 
   res.status(200).json({
