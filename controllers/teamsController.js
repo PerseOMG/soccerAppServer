@@ -4,16 +4,9 @@ const Team = require("../models/teamModel");
 // Utilities
 const catchAsync = require("../utils/catchAsync.util");
 const AppError = require("../utils/appError.util");
-const APIFeatures = require("../utils/apiFeatures.util");
 
 exports.getAllTeams = catchAsync(async (req, res, next) => {
-  const features = new APIFeatures(Team.find(), req.query)
-    .filter()
-    .sort()
-    .limitFields()
-    .paginate();
-
-  const teams = await features.query;
+  const teams = await Team.find();
 
   res.status(200).json({
     status: "success",

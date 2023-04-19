@@ -4,19 +4,12 @@ const { Tournament } = require("../models/tournamentModel");
 // Utilities
 const catchAsync = require("../utils/catchAsync.util");
 const AppError = require("../utils/appError.util");
-const APIFeatures = require("../utils/apiFeatures.util");
 
 exports.getAllTournaments = catchAsync(async (req, res, next) => {
-  const features = new APIFeatures(
-    Tournament.find({ userId: { $in: req.user._id } }, "-userId"),
-    req.query
-  )
-    .filter()
-    .sort()
-    .limitFields()
-    .paginate();
-
-  const tournaments = await features.query;
+  const tournaments = await Tournament.find(
+    { userId: { $in: req.user._id } },
+    "-userId"
+  );
   res.status(200).json({
     status: "success",
     results: tournaments.length,
