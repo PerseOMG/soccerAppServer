@@ -4,7 +4,8 @@ const {
   TournamentEditionStatistics,
   TournamentHistoricalStatistics,
 } = require("../../models/statistics/tournamentStatistics");
-const updateById = require("../factories/updateById");
+const updateById = require("../factories/updateById.factory");
+const findModel = require("../factories/find.factory");
 
 exports.getStatistics = catchAsync(async (req, res, next) => {
   const id = req.params.id;
@@ -14,11 +15,11 @@ exports.getStatistics = catchAsync(async (req, res, next) => {
     return AppError(res, "Please select a proper type", 400);
   }
 
-  const tournamentStatistics = findStatistics(
+  const tournamentStatistics = await findModel(
     type === "edition"
       ? TournamentEditionStatistics
       : TournamentHistoricalStatistics,
-    id
+    { tournamentId: id }
   );
 
   if (!tournamentStatistics || tournamentStatistics.length === 0) {
@@ -57,7 +58,3 @@ exports.updateStatistics = catchAsync(async (req, res, next) => {
     data: { tournamentStatistics },
   });
 });
-
-const findStatistics = async (Model, id) => {
-  return await Model.find({ tournamentId: id });
-};

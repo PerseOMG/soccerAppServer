@@ -4,10 +4,11 @@ const Team = require("../models/teamModel");
 // Utilities
 const catchAsync = require("../utils/catchAsync.util");
 const AppError = require("../utils/appError.util");
-const updateById = require("./factories/updateById");
+const updateById = require("./factories/updateById.factory");
+const findModel = require("./factories/find.factory");
 
 exports.getAllTeams = catchAsync(async (req, res, next) => {
-  const teams = await Team.find();
+  const teams = await findModel(Team);
 
   res.status(200).json({
     status: "success",

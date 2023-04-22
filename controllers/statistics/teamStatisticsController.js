@@ -1,7 +1,7 @@
 const catchAsync = require("../../utils/catchAsync.util");
 const AppError = require("../../utils/appError.util");
 const TeamStatistics = require("../../models/statistics/teamStatistics");
-const updateById = require("../factories/updateById");
+const updateById = require("../factories/updateById.factory");
 
 exports.getTeamStatistics = catchAsync(async (req, res, next) => {
   const ids = req.params.id.split(",");
@@ -10,7 +10,7 @@ exports.getTeamStatistics = catchAsync(async (req, res, next) => {
 
   await Promise.all(
     ids.map(async (id) => {
-      await TeamStatistics.find({ team: id })
+      await findModel(TeamStatistics, { team: id })
         .exec()
         .then((team) => {
           if (!team || team.length === 0) {

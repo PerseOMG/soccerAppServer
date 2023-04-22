@@ -1,7 +1,7 @@
 const User = require("../models/userModel");
 const catchAsync = require("../utils/catchAsync.util");
 const AppError = require("../utils/appError.util");
-const updateById = require("./factories/updateById");
+const updateById = require("./factories/updateById.factory");
 
 const filterObj = (obj, ...allowedFields) => {
   const newObj = {};

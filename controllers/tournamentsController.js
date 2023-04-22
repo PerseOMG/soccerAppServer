@@ -4,10 +4,12 @@ const { Tournament } = require("../models/tournamentModel");
 // Utilities
 const catchAsync = require("../utils/catchAsync.util");
 const AppError = require("../utils/appError.util");
-const updateById = require("./factories/updateById");
+const updateById = require("./factories/updateById.factory");
+const findModel = require("./factories/find.factory");
 
 exports.getAllTournaments = catchAsync(async (req, res, next) => {
-  const tournaments = await Tournament.find(
+  const tournaments = await findModel(
+    Tournament,
     { userId: { $in: req.user._id } },
     "-userId"
   );
@@ -49,7 +51,7 @@ exports.createTournament = catchAsync(async (req, res, next) => {
 exports.getTournament = catchAsync(async (req, res, next) => {
   const id = req.params.id;
 
-  const tournament = await Tournament.find({
+  const tournament = await findModel(Tournament, {
     userId: { $in: req.user._id },
     _id: id,
   });
