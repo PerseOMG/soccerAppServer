@@ -52,7 +52,7 @@ exports.updateTeam = catchAsync(async (req, res, next) => {
   res.status(200).json({
     status: "success",
     results: 1,
-    data: { teams },
+    data: { team },
   });
 });
 
