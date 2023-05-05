@@ -17,7 +17,6 @@ exports.getAllTeams = catchAsync(async (req, res, next) => {
 
 exports.createTeam = catchAsync(async (req, res, next) => {
   const newTeam = await Team.create({ ...req.body, userId: req.user._id });
-
   res.status(201).json({ status: "success", data: { team: newTeam } });
 });
 

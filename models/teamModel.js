@@ -67,41 +67,43 @@ teamSchema.pre("save", async function (next) {
   const { Tournament, TeamPositionTableData } = require("./tournamentModel");
 
   // Assign new team to tournaments
-  this.tournaments.forEach(async (tournamentId) => {
-    await Tournament.findById(tournamentId.toString())
-      .exec()
-      .then(async (tournament) => {
-        tournament.calendar = [];
-        [...tournament.teams, { _id: this._id }].forEach((team, idx) => {
-          const matches = [];
-          for (let i = idx; i < tournament.teams.length; i++) {
-            matches.push({
-              local: team._id.toString(),
-              visit: [...tournament.teams, { _id: this._id }][
-                i + 1
-              ]._id.toString(),
-              hasBeenPlayed: false,
-              score: "0 - 0",
-            });
-          }
-          if (idx !== tournament.teams.length)
-            tournament.calendar.push({
-              edition: idx + 1,
-              matches,
-            });
+  if (this.tournaments) {
+    this.tournaments.forEach(async (tournamentId) => {
+      await Tournament.findById(tournamentId.toString())
+        .exec()
+        .then(async (tournament) => {
+          tournament.calendar = [];
+          [...tournament.teams, { _id: this._id }].forEach((team, idx) => {
+            const matches = [];
+            for (let i = idx; i < tournament.teams.length; i++) {
+              matches.push({
+                local: team._id.toString(),
+                visit: [...tournament.teams, { _id: this._id }][
+                  i + 1
+                ]._id.toString(),
+                hasBeenPlayed: false,
+                score: "0 - 0",
+              });
+            }
+            if (idx !== tournament.teams.length)
+              tournament.calendar.push({
+                edition: idx + 1,
+                matches,
+              });
+          });
+          Tournament.findByIdAndUpdate(tournament._id, {
+            ...tournament,
+            teams: [...tournament.teams, this._id],
+            positionTable: [
+              ...tournament.positionTable,
+              new TeamPositionTableData({ team: this._id.toString() }),
+            ],
+          })
+            .exec()
+            .then(() => next());
         });
-        Tournament.findByIdAndUpdate(tournament._id, {
-          ...tournament,
-          teams: [...tournament.teams, this._id],
-          positionTable: [
-            ...tournament.positionTable,
-            new TeamPositionTableData({ team: this._id.toString() }),
-          ],
-        })
-          .exec()
-          .then(() => next());
-      });
-  });
+    });
+  }
 });
 
 teamSchema.pre("deleteOne", async function (next) {
@@ -109,55 +111,57 @@ teamSchema.pre("deleteOne", async function (next) {
 
   const { Tournament } = require("./tournamentModel");
   // Assign new team to tournaments
-  team.tournaments.forEach(async (tournament) => {
-    await Tournament.findById(tournament._id.toString())
-      .exec()
-      .then(async (tournament) => {
-        tournament.calendar = [];
-        tournament.teams.forEach((teamFromTournament, idx) => {
-          let matches = [];
-          if (teamFromTournament._id.toString() !== team._id.toString()) {
-            for (let i = idx; i < tournament.teams.length; i++) {
-              if (tournament.teams[i + 1] && tournament.teams[idx]) {
-                matches.push({
-                  local: tournament.teams[idx]._id.toString(),
-                  visit: tournament.teams[i + 1]._id.toString(),
-                  hasBeenPlayed: false,
-                  score: "0 - 0",
+  if (team.tournaments) {
+    team.tournaments.forEach(async (tournament) => {
+      await Tournament.findById(tournament._id.toString())
+        .exec()
+        .then(async (tournament) => {
+          tournament.calendar = [];
+          tournament.teams.forEach((teamFromTournament, idx) => {
+            let matches = [];
+            if (teamFromTournament._id.toString() !== team._id.toString()) {
+              for (let i = idx; i < tournament.teams.length; i++) {
+                if (tournament.teams[i + 1] && tournament.teams[idx]) {
+                  matches.push({
+                    local: tournament.teams[idx]._id.toString(),
+                    visit: tournament.teams[i + 1]._id.toString(),
+                    hasBeenPlayed: false,
+                    score: "0 - 0",
+                  });
+                }
+              }
+              matches = matches.filter(
+                (match) =>
+                  match.local !== team._id.toString() &&
+                  match.visit !== team._id.toString()
+              );
+
+              if (idx !== tournament.teams.length && matches.length !== 0) {
+                tournament.calendar.push({
+                  edition: idx + 1,
+                  matches,
                 });
               }
             }
-            matches = matches.filter(
-              (match) =>
-                match.local !== team._id.toString() &&
-                match.visit !== team._id.toString()
-            );
-
-            if (idx !== tournament.teams.length && matches.length !== 0) {
-              tournament.calendar.push({
-                edition: idx + 1,
-                matches,
-              });
-            }
-          }
+          });
+          Tournament.findByIdAndUpdate(tournament._id, {
+            name: tournament.name,
+            logo: tournament.logo,
+            userId: tournament.userId,
+            calendar: tournament.calendar,
+            isEditionComplete: tournament.isEditionComplete,
+            teams: tournament.teams.filter(
+              (teamFromTournament) => teamFromTournament._id !== team._id
+            ),
+            positionTable: tournament.positionTable.filter(
+              (tableData) => tableData.team
+            ),
+          })
+            .exec()
+            .then(() => next());
         });
-        Tournament.findByIdAndUpdate(tournament._id, {
-          name: tournament.name,
-          logo: tournament.logo,
-          userId: tournament.userId,
-          calendar: tournament.calendar,
-          isEditionComplete: tournament.isEditionComplete,
-          teams: tournament.teams.filter(
-            (teamFromTournament) => teamFromTournament._id !== team._id
-          ),
-          positionTable: tournament.positionTable.filter(
-            (tableData) => tableData.team
-          ),
-        })
-          .exec()
-          .then(() => next());
-      });
-  });
+    });
+  }
 });
 
 teamSchema.post("save", async function () {
