@@ -48,6 +48,7 @@ const tournamentSchema = new mongoose.Schema({
   userId: {
     type: mongoose.Schema.ObjectId,
   },
+  edition: { type: Number, required: true, default: 1 },
   isEditionComplete: {
     type: Boolean,
     default: false,
@@ -179,7 +180,9 @@ tournamentSchema.pre("save", async function (next) {
       .then(async (team) => {
         Team.findByIdAndUpdate(team._id, {
           ...team,
-          tournaments: [...team.tournaments, this._id],
+          tournaments: team.tournaments
+            ? [...team.tournaments, this._id]
+            : [this._id],
         })
           .exec()
           .then(() => next());

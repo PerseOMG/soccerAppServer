@@ -137,7 +137,7 @@ teamStatisticsSchema
     return (
       this.teamHistoricalData.totalGamesPlayed -
       this.teamHistoricalData.totalGamesWon -
-      this.teamHistoricalData.totalgamesLost
+      this.teamHistoricalData.totalGamesLost
     );
   });
 
