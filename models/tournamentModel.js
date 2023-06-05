@@ -58,8 +58,12 @@ const tournamentSchema = new mongoose.Schema({
       winnerDefinition: {
         type: String, // points || playoffs
         required: true,
+        default: "playoffs",
       },
-      playoffsQuantity: Number, // 10 | 8 | 6 | 4 | 2
+      playoffsQuantity: {
+        type: Number, // 10 | 8 | 6 | 4 | 2
+        default: 4,
+      },
     },
   },
   positionTable: [teamPositionTableData],
@@ -67,26 +71,26 @@ const tournamentSchema = new mongoose.Schema({
     type: {
       champion: {
         type: String,
-        default: null,
+        default: 0,
       },
       lastPosition: {
         type: String,
-        default: null,
+        default: 0,
       },
       subChamp: {
         type: String,
-        default: null,
+        default: 0,
       },
       winRates: [
         {
           type: [String],
-          default: null,
+          default: [],
         },
       ],
       looseRates: [
         {
           type: [String],
-          default: null,
+          default: [],
         },
       ],
     },

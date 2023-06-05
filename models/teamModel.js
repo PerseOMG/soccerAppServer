@@ -19,6 +19,7 @@ const teamSchema = new mongoose.Schema(
       {
         type: mongoose.Schema.ObjectId,
         ref: "Tournament",
+        default: [],
       },
     ],
     totalChampionships: [
@@ -31,7 +32,7 @@ const teamSchema = new mongoose.Schema(
           },
           value: {
             type: Number,
-            default: null,
+            default: 0,
           },
           edition: [
             {
@@ -40,7 +41,7 @@ const teamSchema = new mongoose.Schema(
             },
           ],
         },
-        default: null,
+        default: [],
       },
     ],
     userId: {
