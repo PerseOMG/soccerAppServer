@@ -42,7 +42,6 @@ const teamStatisticsSchema = new mongoose.Schema(
             default: 0,
           },
         },
-        default: null,
       },
     ],
     finalsData: {
@@ -72,7 +71,6 @@ const teamStatisticsSchema = new mongoose.Schema(
           },
         ],
       },
-      default: null,
     },
     teamHistoricalData: {
       totalGoalsScored: {
