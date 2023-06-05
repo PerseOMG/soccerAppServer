@@ -56,7 +56,7 @@ const teamSchema = new mongoose.Schema(
 
 teamSchema.pre(/^find/, function (next) {
   this.lean().populate({
-    path: "tournaments totalChampionships.tournament",
+    path: "tournaments totalChampionships.tournament totalChampionships.edition totalChampionships.value",
     select:
       "_id name logo -teams -positionTable.team -calendar.matches.local -calendar.matches.visit",
   });
