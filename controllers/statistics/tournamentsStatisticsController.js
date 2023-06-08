@@ -21,7 +21,6 @@ exports.getStatistics = catchAsync(async (req, res, next) => {
       ? await TournamentEditionStatistics.find({ tournamentId: id })
       : await TournamentHistoricalStatistics.find({ tournamentId: id });
 
-  console.log(tournamentStatistics);
   if (!tournamentStatistics || tournamentStatistics.length === 0) {
     return res.status(404).json({
       status: "fail",
