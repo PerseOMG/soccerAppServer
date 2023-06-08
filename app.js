@@ -19,14 +19,14 @@ app.use(helmet());
 
 // Limit requests calls from API
 const limiter = rateLimit({
-  max: 1000, // 100 calls
+  max: 10000, // 100 calls
   windowMs: 60 * 60 * 1000, //1hr
   message: "Too many request from this IP, please try again in an hour!",
 });
 app.use("/api", limiter);
 
 // Body Parser, reading data from the body into req.body
-app.use(express.json({ limit: "10kb" }));
+app.use(express.json({ limit: "50mb" }));
 app.use(cors());
 
 // Data sanitization against NoSQL query injection
