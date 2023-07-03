@@ -44,7 +44,6 @@ exports.getTeamStatistics = catchAsync(async (req, res, next) => {
 exports.updateTeamStatistics = catchAsync(async (req, res, next) => {
   const id = req.params.id;
   const body = req.body;
-
   const teamStatistics = await TeamStatistics.findByIdAndUpdate(id, body, {
     new: true,
     runValidators: true,
