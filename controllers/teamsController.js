@@ -6,7 +6,7 @@ const catchAsync = require("../utils/catchAsync.util");
 const AppError = require("../utils/appError.util");
 
 exports.getAllTeams = catchAsync(async (req, res, next) => {
-  const teams = await Team.find();
+  const teams = await Team.find({ userId: req.user._id });
 
   res.status(200).json({
     status: "success",
