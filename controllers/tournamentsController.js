@@ -20,6 +20,10 @@ exports.getAllTournaments = catchAsync(async (req, res, next) => {
 exports.createTournament = catchAsync(async (req, res, next) => {
   const { teams } = req.body;
 
+  if (teams.length % 2 !== 0) {
+    return AppError(res, "Please choose the proper amount of teams.", 400);
+  }
+
   const tournament = new Tournament({
     name: req.body.name,
     teams,
