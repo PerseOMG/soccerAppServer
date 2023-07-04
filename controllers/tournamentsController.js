@@ -20,10 +20,6 @@ exports.getAllTournaments = catchAsync(async (req, res, next) => {
 exports.createTournament = catchAsync(async (req, res, next) => {
   const { teams } = req.body;
 
-  if (teams.length % 2 !== 0) {
-    return AppError(res, "Please choose the proper amount of teams.", 400);
-  }
-
   const tournament = new Tournament({
     name: req.body.name,
     teams,
@@ -71,6 +67,7 @@ exports.getTournament = catchAsync(async (req, res, next) => {
 exports.updateTournament = catchAsync(async (req, res, next) => {
   const id = req.params.id;
   const body = req.body;
+
   const tournament = await Tournament.findByIdAndUpdate(id, body, {
     new: true,
     runValidators: true,
