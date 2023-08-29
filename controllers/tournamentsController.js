@@ -18,12 +18,13 @@ exports.getAllTournaments = catchAsync(async (req, res, next) => {
 });
 
 exports.createTournament = catchAsync(async (req, res, next) => {
-  const { teams } = req.body;
+  const { teams, name, logo, options } = req.body;
 
   const tournament = new Tournament({
-    name: req.body.name,
+    name,
     teams,
-    logo: req.body.logo,
+    logo,
+    options,
     userId: req.user._id,
     editionStatistics: { currentEdition: 0 },
     historicalStatistics: { currentEdition: 0 },
