@@ -170,7 +170,7 @@ teamStatisticsSchema
   .virtual("teamHistoricalData.lostGamesAverage")
   .get(function () {
     return this.teamHistoricalData.totalGamesPlayed != 0
-      ? this.teamHistoricalData.totalgamesLost /
+      ? this.teamHistoricalData.totalGamesLost /
           this.teamHistoricalData.totalGamesPlayed
       : 0;
   });
@@ -178,9 +178,9 @@ teamStatisticsSchema
 teamStatisticsSchema
   .virtual("teamHistoricalData.wonLostRatio")
   .get(function () {
-    return this.teamHistoricalData.totalgamesLost != 0
+    return this.teamHistoricalData.totalGamesLost != 0
       ? this.teamHistoricalData.totalGamesWon /
-          this.teamHistoricalData.totalgamesLost
+          this.teamHistoricalData.totalGamesLost
       : 0;
   });
 
