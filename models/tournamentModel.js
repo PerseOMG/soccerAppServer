@@ -131,7 +131,7 @@ tournamentSchema.pre(/^find/, function (next) {
   this.lean()
     .populate({
       path: "teams",
-      select: "id name logo -tournaments",
+      select: "id name logo isFavorite -tournaments",
     })
     .populate({
       path: "positionTable.team",
