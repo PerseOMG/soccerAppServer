@@ -34,7 +34,7 @@ exports.createTournament = catchAsync(async (req, res, next) => {
     if (err) {
       return AppError(
         res,
-        "Something went wrong. Please choose another name for your tournament",
+        "Tournament's name already in use! Please select another one.",
         400
       );
     }

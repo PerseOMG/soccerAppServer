@@ -16,7 +16,18 @@ exports.getAllTeams = catchAsync(async (req, res, next) => {
 });
 
 exports.createTeam = catchAsync(async (req, res, next) => {
+  const checkTeam = await Team.findOne({ name: req.body.name });
+
+  if (checkTeam) {
+    return AppError(
+      res,
+      "Team's name already in use! Please choose another one.",
+      404
+    );
+  }
+
   const newTeam = await Team.create({ ...req.body, userId: req.user._id });
+
   res.status(201).json({ status: "success", data: { team: newTeam } });
 });
 
